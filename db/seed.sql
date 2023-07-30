@@ -1,4 +1,4 @@
-/c vibes_dev;
+\c vibes_dev;
 
 INSERT INTO songs (title, artist, album, time, is_favorite) VALUES 
 (
@@ -36,4 +36,5 @@ INSERT INTO songs (title, artist, album, time, is_favorite) VALUES
     null,
     '2:00',
     true
-  );
+  ),
+  ('Right Above It', 'Drake, Lil Wayne', 'I Am Not a Human Being', '4:32', true);
