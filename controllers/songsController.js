@@ -9,6 +9,7 @@ const {
   addNewSong,
   deleteSongById,
   updatedSongById,
+  getSongByOrder,
 } = require("../queries/songs");
 
 // VALIDATIONS
@@ -25,13 +26,33 @@ router.get("/", async (req, res) => {
     if (!allSongs) {
       return res.status(500).json({ Error: "Server Error" });
     } else {
-      return res.status(200).json(allSongs);
+      const query = req.query;
+      // console.log(query);
+      if (Object.keys(query).length === 0) {
+        return res.status(200).json(allSongs);
+      } else {
+        const queriedSongs = await getSongByOrder(query);
+        return res.json(queriedSongs);
+      }
     }
   } catch (e) {
     return res.status(500).json({ Error: e });
   }
   //   res.json({ status: "ok" });
 });
+
+// GET - BY ORDER
+// router.get("/", async (req, res) => {
+//   const query = req.query;
+//   console.log(query);
+
+//   if (query.length === 0) {
+//     return res.status(404).json({ Error: "Cannot Make An Empty Query" });
+//   } else {
+//     const queriedSongs = await getSongByOrder(query);
+//     console.log(queriedSongs);
+//   }
+// });
 
 // GET - SONG BY ID
 router.get("/:id", async (req, res) => {

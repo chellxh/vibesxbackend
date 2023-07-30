@@ -10,6 +10,31 @@ const getAllSongs = async () => {
     return e;
   }
 };
+
+// ORDER QUERIES
+const getSongByOrder = async (songs) => {
+  if (songs.order === "asc") {
+    const songsOrderAsc = await db.any(
+      `SELECT * FROM songs ORDER BY title ASC`
+    );
+    return songsOrderAsc;
+  } else if (songs.order === "desc") {
+    const songsOrderDesc = await db.any(
+      `SELECT * FROM songs ORDER BY title DESC`
+    );
+    return songsOrderDesc;
+  } else if (songs.is_favorite === "true") {
+    const songsFavoriteTrue = await db.any(
+      `SELECT * FROM songs WHERE is_favorite IS TRUE`
+    );
+    return songsFavoriteTrue;
+  } else if (songs.is_favorite === "false") {
+    const songsFavoriteFalse = await db.any(
+      `SELECT * FROM songs WHERE is_favorite IS FALSE`
+    );
+    return songsFavoriteFalse;
+  }
+};
 // GET - ONE SONG QUERY
 const songById = async (id) => {
   try {
@@ -58,6 +83,7 @@ const updatedSongById = async (id, song) => {
     return e;
   }
 };
+
 // EXPORT
 
 module.exports = {
@@ -66,4 +92,5 @@ module.exports = {
   addNewSong,
   deleteSongById,
   updatedSongById,
+  getSongByOrder,
 };
