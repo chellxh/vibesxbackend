@@ -17,7 +17,7 @@ const {
   checkTitle,
   checkArtist,
   checkBoolean,
-} = require("../validations/checkSongs");
+} = require("../validations/check");
 
 // GET - INDEX
 router.get("/", async (req, res) => {
@@ -102,6 +102,19 @@ router.put("/:id", checkTitle, checkArtist, checkBoolean, async (req, res) => {
     return res.status(500).json({ Error: "Server Error" });
   }
 });
-
+// GET - SONGS BY ARTIST
+router.get("/:artistId/get-all-songs", async (res, req) => {
+  const { artistId } = req.params;
+  try {
+    const artistsSongs = await songsByArtist(artistId);
+    if (artistsSongs.length === 0) {
+      return res.status(404).json({ Error: "Songs Not Found" });
+    } else {
+      return res.json(artistsSongs);
+    }
+  } catch (e) {
+    return res.status(500).json({ Error: e });
+  }
+});
 // EXPORT
 module.exports = router;

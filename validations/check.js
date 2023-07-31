@@ -16,6 +16,14 @@ const checkArtist = (req, res, next) => {
     next();
   }
 };
+// CHECK IF USER INPUT ARTIST_NAME
+const checkArtistName = (req, res, next) => {
+  if (!req.body.artist_name) {
+    res.status(400).json({ Error: "Artist Name is Required." });
+  } else {
+    next();
+  }
+};
 
 // CHECK IF IS_FAVORITE IS A BOOLEAN
 const checkBoolean = (req, res, next) => {
@@ -28,5 +36,4 @@ const checkBoolean = (req, res, next) => {
   }
 };
 
-
-module.exports = { checkTitle, checkArtist, checkBoolean };
+module.exports = { checkTitle, checkArtist, checkArtistName, checkBoolean };

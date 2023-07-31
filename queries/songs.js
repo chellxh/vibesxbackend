@@ -1,8 +1,10 @@
 // DEPENDENCIES
 const db = require("../db/dbConfig");
 
+const { artistById } = require("./artists");
+
 // GET - ALL SONGS QUERY
-const getAllSongs = async () => {
+const getAllSongs = async (artistId) => {
   try {
     const allSongs = await db.any("SELECT * FROM songs");
     return allSongs;
@@ -35,6 +37,7 @@ const getSongByOrder = async (songs) => {
     return songsFavoriteFalse;
   }
 };
+
 // GET - ONE SONG QUERY
 const songById = async (id) => {
   try {
@@ -44,6 +47,31 @@ const songById = async (id) => {
     return e;
   }
 };
+
+// GET - SONG BY ARTIST ID
+const songsByArtist = async (artistId, songId) => {
+  try {
+    const artistSongs = await db.any(
+      `SELECT artist_ID, title, album, time, is_favorite FROM artists JOIN SONGS ON artists.id = songs.artist_id WHERE artists.id = $1 AND songs.id = $2`,
+      [artistId, songId]
+    );
+    return artistSongs;
+  } catch (e) {
+    return e;
+  }
+};
+
+// const getAllSongsByArtistId = async (artistId) => {
+//   try {
+//     const allSongsByArtist = await db.any(
+//       "SELECT * FROM songs WHERE artist_id = $1 ORDER BY ASC",
+//       artistId
+//     );
+//     return allSongsByArtist;
+//   } catch (e) {
+//     return e;
+//   }
+// };
 
 // POST - NEW SONG QUERY
 const addNewSong = async (data) => {
@@ -84,11 +112,13 @@ const updatedSongById = async (id, song) => {
   }
 };
 
-// EXPORT
+// EXPORTS
 
 module.exports = {
   getAllSongs,
+  // getAllSongsByArtistId,
   songById,
+  songsByArtist,
   addNewSong,
   deleteSongById,
   updatedSongById,

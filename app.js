@@ -5,6 +5,7 @@ const morgan = require("morgan");
 
 // CONTROLLERS
 const songsController = require("./controllers/songsController");
+const artistController = require("./controllers/artistController");
 
 // CONFIGs
 const app = express();
@@ -14,13 +15,16 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
-// ROUTES
+// --- ROUTES ---
 app.get("/", (req, res) => {
   res.send("🎶 Welcome to Vibes 🎶");
 });
 
 // SONGS ROUTES
 app.use("/songs", songsController);
+
+// ARTISTS ROUTE
+app.use("/artists", artistController);
 
 // 404 ROUTE
 app.get("*", (req, res) => {
