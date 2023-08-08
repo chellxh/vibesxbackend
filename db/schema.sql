@@ -23,14 +23,3 @@ CREATE TABLE songs (
     artist_id INT REFERENCES artists (id)
  ON DELETE CASCADE
 );
-
-DROP TABLE IF EXISTS playlists; 
-
-CREATE TABLE playlists (
-    id serial PRIMARY KEY,
-    playlist_name TEXT NOT NULL,
-    song_id INT REFERENCES songs (id)
- ON DELETE CASCADE
-);
-
--- npm run pg:init

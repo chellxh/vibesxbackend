@@ -1,8 +1,6 @@
 // DEPENDENCIES
 const db = require("../db/dbConfig");
 
-const { songById } = require("./songs");
-
 // GET - ALL ARTIST QUERY
 const getAllArtists = async () => {
   try {
@@ -13,23 +11,36 @@ const getAllArtists = async () => {
   }
 };
 
+// ORDER QUERIES
+const getArtistsByOrder = async (artists) => {
+  if (artists.order === "asc") {
+    const artistsOrderAsc = await db.any(
+      `SELECT * FROM artists ORDER BY artist_name ASC`
+    );
+    return artistsOrderAsc;
+  } else if (artists.order === "desc") {
+    const artistsOrderDesc = await db.any(
+      `SELECT * FROM artists ORDER BY artist_name DESC`
+    );
+    return artistsOrderDesc;
+  } else if (artists.is_favorite === "true") {
+    const artistsFavoriteTrue = await db.any(
+      `SELECT * FROM artists WHERE is_favorite IS TRUE`
+    );
+    return artistsFavoriteTrue;
+  } else if (artists.is_favorite === "false") {
+    const artistsFavoriteFalse = await db.any(
+      `SELECT * FROM artists WHERE is_favorite IS FALSE`
+    );
+    return artistsFavoriteFalse;
+  }
+};
+
 // GET - ARTIST BY ID QUERY
 const artistById = async (id) => {
   try {
     const artist = await db.any(`SELECT * FROM artists WHERE id = $1`, id);
     return artist;
-  } catch (e) {
-    return e;
-  }
-};
-// GET - ALL ARTISTS IN ONE SONG QUERY
-const getAllArtistsInSong = async (songId) => {
-  try {
-    const allArtists = await db.any(
-      `SELECT * artists WHERE song_id = $1 ORDER BY id ASC`,
-      songId
-    );
-    return allArtists;
   } catch (e) {
     return e;
   }
@@ -79,8 +90,8 @@ const updatedArtistById = async (id, artist) => {
 module.exports = {
   getAllArtists,
   artistById,
-  getAllArtistsInSong,
   addNewArtist,
   deleteArtistById,
   updatedArtistById,
+  getArtistsByOrder,
 };

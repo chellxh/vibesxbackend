@@ -1,6 +1,6 @@
 // DEPENDENCIES
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // QUERIES
 const {
@@ -9,7 +9,6 @@ const {
   addNewSong,
   deleteSongById,
   updatedSongById,
-  getSongByOrder,
 } = require("../queries/songs");
 
 // VALIDATIONS
@@ -22,18 +21,11 @@ const {
 // GET - INDEX
 router.get("/", async (req, res) => {
   try {
-    const allSongs = await getAllSongs();
+    const allSongs = await getAllSongs(req.params.artistId);
     if (!allSongs) {
       return res.status(500).json({ Error: "Server Error" });
     } else {
-      const query = req.query;
-      // console.log(query);
-      if (Object.keys(query).length === 0) {
-        return res.status(200).json(allSongs);
-      } else {
-        const queriedSongs = await getSongByOrder(query);
-        return res.json(queriedSongs);
-      }
+      return res.json(allSongs);
     }
   } catch (e) {
     return res.status(500).json({ Error: e });
@@ -57,15 +49,21 @@ router.get("/", async (req, res) => {
 // GET - SONG BY ID
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
+  try {
+    const artistSongById = await songById(id);
 
-  const thatSong = await songById(id);
+    console.log(artistSongById);
 
-  console.log(thatSong);
-
-  if (thatSong.length === 0) {
-    return res.status(400).json({ Error: "Song Not Found" });
-  } else {
-    return res.json(thatSong[0]);
+    if (artistSongById.length === 0) {
+      throw {
+        status: 404,
+        message: "Song Not Found",
+      };
+    } else {
+      return res.json(artistSongById[0]);
+    }
+  } catch (e) {
+    return res.status(e.status).json({ Error: e.message });
   }
 });
 

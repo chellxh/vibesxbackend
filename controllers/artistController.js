@@ -15,6 +15,7 @@ const {
   addNewArtist,
   deleteArtistById,
   updatedArtistById,
+  getArtistsByOrder,
 } = require("../queries/artists");
 
 // VALIDATIONS
@@ -27,6 +28,18 @@ router.get("/", async (req, res) => {
     return res.status(500).json({ Error: "Server Error" });
   } else {
     return res.status(200).json(allArtists);
+  }
+});
+
+router.get("/", async (req, res) => {
+  const query = req.query;
+  console.log(query);
+
+  if (query.length === 0) {
+    return res.status(404).json({ Error: "Cannot Make An Empty Query" });
+  } else {
+    const queriedArtist = await getArtistsByOrder(query);
+    res.json(queriedArtist);
   }
 });
 

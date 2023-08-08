@@ -3,46 +3,29 @@ const db = require("../db/dbConfig");
 
 const { artistById } = require("./artists");
 
-// GET - ALL SONGS QUERY
+// GET - ALL SONGS BY ARTIST QUERY
 const getAllSongs = async (artistId) => {
   try {
-    const allSongs = await db.any("SELECT * FROM songs");
+    const allSongs = await db.any(
+      "SELECT * FROM songs WHERE artist_id = $1 ORDER BY id ASC",
+      artistId
+    );
+    console.log(allSongs);
     return allSongs;
   } catch (e) {
     return e;
   }
 };
 
-// ORDER QUERIES
-const getSongByOrder = async (songs) => {
-  if (songs.order === "asc") {
-    const songsOrderAsc = await db.any(
-      `SELECT * FROM songs ORDER BY title ASC`
-    );
-    return songsOrderAsc;
-  } else if (songs.order === "desc") {
-    const songsOrderDesc = await db.any(
-      `SELECT * FROM songs ORDER BY title DESC`
-    );
-    return songsOrderDesc;
-  } else if (songs.is_favorite === "true") {
-    const songsFavoriteTrue = await db.any(
-      `SELECT * FROM songs WHERE is_favorite IS TRUE`
-    );
-    return songsFavoriteTrue;
-  } else if (songs.is_favorite === "false") {
-    const songsFavoriteFalse = await db.any(
-      `SELECT * FROM songs WHERE is_favorite IS FALSE`
-    );
-    return songsFavoriteFalse;
-  }
-};
-
 // GET - ONE SONG QUERY
-const songById = async (id) => {
+const songById = async (artistId, songId) => {
   try {
-    const theSong = await db.any(`SELECT * FROM songs WHERE id = $1`, id);
-    return theSong;
+    console.log(artistId, songId);
+    const song = await db.any(
+      `SELECT artist_id, title, artist, album, time FROM artists JOIN songs ON artists.id = songs.artist_id WHERE artists.id = $1 AND songs.id = $2`,
+      [artistId, songId]
+    );
+    return song;
   } catch (e) {
     return e;
   }
@@ -116,11 +99,9 @@ const updatedSongById = async (id, song) => {
 
 module.exports = {
   getAllSongs,
-  // getAllSongsByArtistId,
   songById,
   songsByArtist,
   addNewSong,
   deleteSongById,
   updatedSongById,
-  getSongByOrder,
 };
